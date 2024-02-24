@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { Component } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -11,28 +11,38 @@ import "tailwindcss/tailwind.css";
 
 HighchartsMap(Highcharts);
 
-class BubbleMapChart extends Component {
-  constructor(props) {
+interface BubbleMapChartProps {}
+
+interface BubbleMapChartState {
+  liveUsers: { lat: number; lon: number }[];
+}
+
+class BubbleMapChart extends Component<
+  BubbleMapChartProps,
+  BubbleMapChartState
+> {
+  private timer: NodeJS.Timeout | null = null;
+
+  constructor(props: BubbleMapChartProps) {
     super(props);
     this.state = {
       liveUsers: [],
     };
-    this.timer = null;
   }
 
   componentDidMount() {
     // Start simulating live visitors
     this.timer = setInterval(() => {
       this.updateLiveUsers();
-    }, 3000); // Adjust the interval as needed (currently set to 5 seconds)
+    }, 3000); // Adjust the interval as needed (currently set to 3 seconds)
   }
 
   componentWillUnmount() {
     // Stop the simulation when the component is unmounted
-    clearInterval(this.timer);
+    if (this.timer) clearInterval(this.timer);
   }
 
-  shuffleArray(array) {
+  shuffleArray(array: any[]) {
     // shuffle algorithm
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -44,42 +54,15 @@ class BubbleMapChart extends Component {
   updateLiveUsers() {
     // SAMPLE DATA
     const shuffledData = this.shuffleArray([
-      {
-        lat: 19.076,
-        lon: 72.8777,
-      },
-      {
-        lat: 28.7041,
-        lon: 77.1025,
-      },
-      {
-        lat: 12.9716,
-        lon: 77.5946,
-      },
-      {
-        lat: 22.5726,
-        lon: 88.3639,
-      },
-      {
-        lat: 13.0827,
-        lon: 80.2707,
-      },
-      {
-        lat: 17.385,
-        lon: 78.4867,
-      },
-      {
-        lat: 18.5204,
-        lon: 73.8567,
-      },
-      {
-        lat: 23.0225,
-        lon: 72.5714,
-      },
-      {
-        lat: 26.9124,
-        lon: 75.7873,
-      },
+      { lat: 19.076, lon: 72.8777 },
+      { lat: 28.7041, lon: 77.1025 },
+      { lat: 12.9716, lon: 77.5946 },
+      { lat: 22.5726, lon: 88.3639 },
+      { lat: 13.0827, lon: 80.2707 },
+      { lat: 17.385, lon: 78.4867 },
+      { lat: 18.5204, lon: 73.8567 },
+      { lat: 23.0225, lon: 72.5714 },
+      { lat: 26.9124, lon: 75.7873 },
     ]);
 
     const randomLiveUsers = shuffledData.slice(
@@ -93,7 +76,7 @@ class BubbleMapChart extends Component {
   render() {
     const { liveUsers } = this.state;
 
-    const options = {
+    const options: Highcharts.Options = {
       chart: {
         map: "countries/in/custom/in-all-disputed",
         proj4,
